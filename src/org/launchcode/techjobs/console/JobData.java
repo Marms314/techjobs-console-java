@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by LaunchCode
@@ -51,7 +52,10 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        // create a copy of allJobs to return to keep allJobs safe
+        ArrayList<HashMap<String, String>> copyOfAllJobs = allJobs;
+
+        return copyOfAllJobs;
     }
 
     /**
@@ -65,6 +69,7 @@ public class JobData {
      * @param value Value of teh field to search for
      * @return List of all jobs matching the criteria
      */
+    
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
         // load data, if not already loaded
@@ -79,6 +84,38 @@ public class JobData {
             if (aValue.contains(value)) {
                 jobs.add(row);
             }
+        }
+
+        return jobs;
+    }
+
+    
+    /**
+     * Returns results of search using a given term in all columns of data
+     *
+     * For example, searching for "Javascript" will include results
+     * with "Javascript" as a skill/core competency as well as "Javascript Developer"
+     * as the job title, with no open job being repeated in the results
+     *
+     * @param searchTerm Value of the field to search for
+     * @return List of all jobs matching the criteria
+     */
+    
+    public static ArrayList<HashMap<String, String>> findByValue(String searchTerm) {
+
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : allJobs) {
+            row.forEach((key, value) -> {
+                if (value.contains(searchTerm)) {
+                    if(!jobs.contains(row)) {
+                        jobs.add(row);
+                    }
+                }
+            });
         }
 
         return jobs;
