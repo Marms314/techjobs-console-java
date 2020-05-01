@@ -113,9 +113,9 @@ public class TechJobs {
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
         if (someJobs.size() > 0) {
             for (HashMap<String, String> someJob : someJobs) {
-                System.out.println("*****");
+                System.out.println("\n*****");
                 someJob.forEach((key, value) -> System.out.println(key + " : " + value));
-                System.out.println("*****\n");
+                System.out.println("*****");
             }
         } else {
             System.out.println("No results found.");
